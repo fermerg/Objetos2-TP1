@@ -14,13 +14,20 @@ public class Inscripcion {
     }
     public static void inscribirAEn(Participante participante, Concurso concurso){
         Inscripcion inscripcion = new Inscripcion(LocalDate.now(), participante, concurso);
-        concurso.nuevaInscripcion(inscripcion);
+        concurso.inscripcion(inscripcion);
         participante.sumarPuntos(concurso);
     }
     public boolean estaInscripto(Participante participante){
         return this.participante.equals(participante);
     }
 
+    public LocalDate getFecha(){
+        return fecha;
+    }
+
+    public String getParticipanteId(){
+        return participante.getIdParticipante();
+    }
     @Override
     public String toString() {
         return "Participante(s) inscripto(s): " + participante.getNombre();

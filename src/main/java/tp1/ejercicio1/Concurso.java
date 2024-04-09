@@ -1,25 +1,40 @@
 package tp1.ejercicio1;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Concurso {
     private String nombre;
+    private String idConcurso;
     private List<Inscripcion> listaInscriptos;
     private LocalDate fechaInicioInscripcion;
     private LocalDate fechaFinInscripcion;
+    private RegistroDeInscripcion registro;
+    private EmailSender emailSender;
 
-    public Concurso(String nombre, LocalDate fechaInicioInscripcion, LocalDate fechaFinInscripcion) {
+    public Concurso(String nombre, String idConcurso, LocalDate fechaInicioInscripcion, LocalDate fechaFinInscripcion, RegistroDeInscripcion registro) {
         this.nombre = nombre;
-        this.listaInscriptos = new ArrayList<Inscripcion>();
+        this.idConcurso = idConcurso;
+        this.listaInscriptos = new ArrayList<>();
         this.fechaInicioInscripcion = fechaInicioInscripcion;
         this.fechaFinInscripcion = fechaFinInscripcion;
+        this.registro = registro;
+        this.emailSender = new EmailSender();
     }
-    public void nuevaInscripcion(Inscripcion inscripcion) {
-         if(this.concursoAbierto())
-             this.listaInscriptos.add(inscripcion);
-         else System.out.println("La inscripcion a este concurso no esta disponible en esta fecha.");;
+    public void inscripcion(Inscripcion inscripcion) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        if (!this.concursoAbierto()) {
+            throw new RuntimeException("La inscripcion a este concurso no esta disponible en esta fecha.");
+        }
+        this.listaInscriptos.add(inscripcion);
+
+        String datos = (inscripcion.getFecha().format(formatter) + ", " + inscripcion.getParticipanteId() + ", " + this.idConcurso);
+        System.out.println(datos);
+        this.registro.registrar(datos);
+        emailSender.enviarEmail();
     }
     public boolean participanteInscripto(Participante participante){
         return this.listaInscriptos.stream().anyMatch(inscripcion -> inscripcion.estaInscripto(participante));
@@ -27,24 +42,13 @@ public class Concurso {
     public int cantidadInscriptos(){
         return this.listaInscriptos.size();
     }
-    public boolean concursoAbierto() {
+    private boolean concursoAbierto() {
         LocalDate fechaHoy = LocalDate.now();
         return !fechaHoy.isBefore(fechaInicioInscripcion) && !fechaHoy.isAfter(fechaFinInscripcion);
     }
+
     public LocalDate getFechaInicioInscripcion() {
         return fechaInicioInscripcion;
     }
-
-    public void mostrarInscriptos(){
-        for(Inscripcion inscripto: this.listaInscriptos){
-            //if(inscripto.estaInscripto(participante)){
-            System.out.println(inscripto.toString());
-        }
-    }
 }
 
-//El participante debe poder inscribirse a los concursos. El concurso acepta la
-//inscripción solo dentro del rango de fecha de inscripción. El participante gana 10 puntos si se
-//inscribe durante el primer día de abierta la inscripción. Dado un participante se puede conocer la
-//cantidad de puntos ganados. Si un participante intenta inscribirse fuera de la fecha de inscripción
-//se debe informar con un mensaje

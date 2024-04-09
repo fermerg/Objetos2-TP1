@@ -1,26 +1,31 @@
 package tp1.ejercicio1;
 
-import java.time.LocalDate;
+import persistencia.EnBaseDatosRegistroDeInscripcion;
+import persistencia.EnDiscoRegistroDeInscripcion;
 
+import java.sql.Connection;
+import java.time.LocalDate;
 
 public class Main {
     public static void main(String[] args) {
+        Connection conexion = ConexionBD.obtenerConexion();
 
-        Concurso literario = new Concurso("Concurso Literario", LocalDate.now(), LocalDate.now());
-        Concurso belleza = new Concurso("Concurso de Belleza", LocalDate.now(), LocalDate.now());
+        Participante teo = new Participante("35.666.999", "Teo", "3");
+        Participante ana = new Participante("36.666.999", "Ana", "4");
+        Participante juan = new Participante("37.666.999", "Juan", "5");
+        Concurso robotica = new Concurso("Robotica",
+                "999",
+                LocalDate.now(),
+                LocalDate.now().plusDays(30),
+                new EnDiscoRegistroDeInscripcion());
+        Inscripcion.inscribirAEn(teo, robotica);
+        Inscripcion.inscribirAEn(ana, robotica);
+        Inscripcion.inscribirAEn(juan, robotica);
 
-        Participante pedro = new Participante("11111", "Pedro");
-        Participante juan = new Participante("22222", "Juan");
-        Participante maria = new Participante("33333", "Maria");
-        Participante ana = new Participante("444444", "Ana");
-
-        Inscripcion.inscribirAEn(pedro, literario);
-        Inscripcion.inscribirAEn(juan, literario);
-        Inscripcion.inscribirAEn(maria, literario);
-        Inscripcion.inscribirAEn(maria, belleza);
-        Inscripcion.inscribirAEn(ana, belleza);
-
-        literario.mostrarInscriptos();
-        belleza.mostrarInscriptos();
+        Concurso ajedrez = new Concurso("Ajedrez",
+                "998",
+                LocalDate.now(),
+                LocalDate.now().plusDays(30),
+                new EnBaseDatosRegistroDeInscripcion());
     }
 }
