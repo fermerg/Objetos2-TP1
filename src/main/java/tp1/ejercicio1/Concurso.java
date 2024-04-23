@@ -8,36 +8,33 @@ import java.util.List;
 public class Concurso {
     private String nombre;
     private String idConcurso;
-    private List<Inscripcion> listaInscriptos;
+    private List<Participante> listaInscriptos;
     private LocalDate fechaInicioInscripcion;
     private LocalDate fechaFinInscripcion;
     private RegistroDeInscripcion registro;
-    private EmailSender emailSender;
+    private Email emailSender;
 
-    public Concurso(String nombre, String idConcurso, LocalDate fechaInicioInscripcion, LocalDate fechaFinInscripcion, RegistroDeInscripcion registro) {
+    public Concurso(String nombre, String idConcurso, LocalDate fechaInicioInscripcion, LocalDate fechaFinInscripcion, RegistroDeInscripcion registro, Email email) {
         this.nombre = nombre;
         this.idConcurso = idConcurso;
         this.listaInscriptos = new ArrayList<>();
         this.fechaInicioInscripcion = fechaInicioInscripcion;
         this.fechaFinInscripcion = fechaFinInscripcion;
         this.registro = registro;
-        this.emailSender = new EmailSender();
+        this.emailSender = email;
     }
-    public void inscripcion(Inscripcion inscripcion) {
+    public void inscripcion(Participante participante, LocalDate fecha) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         if (!this.concursoAbierto()) {
             throw new RuntimeException("La inscripcion a este concurso no esta disponible en esta fecha.");
         }
-        this.listaInscriptos.add(inscripcion);
-
-        String datos = (inscripcion.getFecha().format(formatter) + ", " + inscripcion.getParticipanteId() + ", " + this.idConcurso);
-        System.out.println(datos);
-        this.registro.registrar(datos);
-        emailSender.enviarEmail();
+        this.listaInscriptos.add(participante);
+        this.registro.registrar(fecha.format(formatter) + ", " + participante.idParticipante() + ", " + this.idConcurso);
+        emailSender.enviarEmail(participante.email());
     }
     public boolean participanteInscripto(Participante participante){
-        return this.listaInscriptos.stream().anyMatch(inscripcion -> inscripcion.estaInscripto(participante));
+        return this.listaInscriptos.contains(participante);
     }
     public int cantidadInscriptos(){
         return this.listaInscriptos.size();

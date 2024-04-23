@@ -7,23 +7,31 @@ public class Participante {
     private String dni;
     private String nombre;
     private String idParticipante;
+    private String email;
     private int puntaje;
 
-    public Participante(String dni, String nombre, String idParticipante){
+    public Participante(String dni, String nombre, String idParticipante, String email){
         this.dni = dni;
         this.nombre = nombre;
         this.idParticipante = idParticipante;
+        this.email = email;
     }
-    public void sumarPuntos(Concurso concurso){
-        if(concurso.getFechaInicioInscripcion().isEqual(LocalDate.now()));
-        this.puntaje += 10;    }
+    public void sumarPuntos(Concurso concurso) {
+        if (concurso.getFechaInicioInscripcion().isEqual(LocalDate.now())) {
+            this.puntaje += 10;
+        }
+    }
 
     public String getNombre() {
         return nombre;
     }
 
-    public String getIdParticipante(){
+    public String idParticipante(){
         return idParticipante;
+    }
+
+    public String email() {
+        return email;
     }
 
     @Override

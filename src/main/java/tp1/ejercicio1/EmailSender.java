@@ -6,15 +6,14 @@ import jakarta.mail.internet.MimeMessage;
 
 import java.util.Properties;
 
-public class EmailSender {
+public class EmailSender implements Email{
     private String host = "sandbox.smtp.mailtrap.io";
     private String port = "25";
-    private String username = "f6d825a61368e0";
-    private String password = "31556cf71f1808";
+    private String username = "20303eaafd4445";
+    private String password = "6a511b0f6a8f0f";
     private String from = "fernandamerg@gmail.com";
-    private String to = "fernandamerg@gmail.com";
 
-    public void enviarEmail() {
+    public void enviarEmail(String email) {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -28,7 +27,7 @@ public class EmailSender {
         try {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(this.from));
-            message.setRecipient(Message.RecipientType.TO, new InternetAddress(this.to));
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(email));
             message.setSubject("Registro exitoso!");
             message.setText("Hola, te has registrado exitosamente en nuestro concurso");
             Transport.send(message);
